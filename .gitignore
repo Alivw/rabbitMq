@@ -1,0 +1,11 @@
+.idea
+#Pro01-rabbitmq-send-java/target/*
+#Pro01-rabbitmq-send-java/*.iml
+#Pro02-rabbitmq-recieve-java/target/*
+#Pro02-rabbitmq-recieve-java/*.iml
+#Pro03-rabbitmq-send-java/target/*
+#Pro03-rabbitmq-send-java/*.iml
+#Pro04-rabbitmq-recieve-java/target/*
+#Pro04-rabbitmq-recieve-java/*.iml
+*/target/*
+*/*.iml
