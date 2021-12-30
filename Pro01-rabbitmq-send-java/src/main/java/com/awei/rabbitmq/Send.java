@@ -5,7 +5,6 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * @Description: 消息发送
@@ -13,16 +12,20 @@ import java.util.concurrent.TimeoutException;
  * @Create: 2021-05-28 11:08
  **/
 public class Send {
+
+
+    public static final String QUEUE_NAME = "hello";
+
     public static void main(String[] args) {
         //创建链接工厂
         ConnectionFactory factory = new ConnectionFactory();
         /**
          * 配置rabbitmq 的连接信息
          */
-        factory.setHost("192.168.0.113");   //指定ip
+        factory.setHost("47.96.76.101");   //指定ip
         factory.setPort(5672);      //指定端口号
-        factory.setUsername("root");       // 指定账号
-        factory.setPassword("root");       // 指定密码
+        factory.setUsername("admin");       // 指定账号
+        factory.setPassword("Szw159421");       // 指定密码
 
         Connection connection = null;       //定义连接
         Channel channel = null;             // 定义通道
@@ -42,7 +45,7 @@ public class Send {
              *      2. 队列名可以取值任意 但是要与消息接受时 完全一致
              *      3. 这行代码是可有可无的 但是一定要在发送消息前确认队列名称已经存在 在rabbitmq 中，否则就会出现问题
              */
-            channel.queueDeclare("myQueue", true, false, false, null);
+            channel.queueDeclare(QUEUE_NAME, true, false, true, null);
 
             String message = "我的RabbitMq的测试消息11";
             /**
@@ -52,23 +55,23 @@ public class Send {
              * 参数三： 为消息属性信息 通常为空即可
              * 参数四： 为具体的消息数据的字节数组
              */
-            channel.basicPublish("", "myQueue", null, message.getBytes("utf-8"));
+            channel.basicPublish("", QUEUE_NAME, null, message.getBytes("utf-8"));
             System.out.println("消息发送成功");
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
+
         } finally {
             if (channel != null) {
                 try {
                     channel.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (TimeoutException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+
+
+
             if (connection != null) {
                 try {
                     connection.close();
@@ -76,6 +79,9 @@ public class Send {
                     e.printStackTrace();
                 }
             }
+
+
+
         }
     }
 }
