@@ -18,6 +18,5 @@ public class MqUtils {
         factory.setPassword("Szw159421");
 
         return factory.newConnection().createChannel();
-
     }
 }

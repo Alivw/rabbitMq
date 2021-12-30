@@ -2,6 +2,7 @@ package com.awei.rabbitmq.ask;
 
 import com.awei.rabbitmq.util.MqUtils;
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.MessageProperties;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
@@ -17,13 +18,16 @@ public class Task {
     public static void main(String[] args) throws Exception {
         Channel channel = MqUtils.getChannel();
 
-        channel.queueDeclare(QUEUE_NAME, false, false, true, null);
+        channel.queueDeclare(QUEUE_NAME, true, false, false, null);
 
         Scanner in = new Scanner(System.in);
 
         while (in.hasNext()) {
             String msg = in.next();
-            channel.basicPublish("", QUEUE_NAME, null, msg.getBytes(StandardCharsets.UTF_8));
+            /**
+             * props: 消息持久化参数
+             */
+            channel.basicPublish("", QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN, msg.getBytes(StandardCharsets.UTF_8));
             System.out.println("发送消息=====>" + msg);
         }
     }
