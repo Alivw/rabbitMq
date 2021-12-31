@@ -37,18 +37,8 @@ public class Task {
             if (channel.waitForConfirms()) {
                 System.out.println("消息发送成功");
             }
-
-
-
         }
-
-
-
-
         System.out.println(System.currentTimeMillis() - begin);
-
-
-
     }
 
 

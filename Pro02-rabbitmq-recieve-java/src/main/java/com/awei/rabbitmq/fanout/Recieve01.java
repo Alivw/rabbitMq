@@ -1,9 +1,12 @@
 package com.awei.rabbitmq.fanout;
 
-import com.rabbitmq.client.*;
+import com.awei.rabbitmq.util.MqUtils;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * @Description: fanout交换机接收器
@@ -11,19 +14,14 @@ import java.util.concurrent.TimeoutException;
  * @Create: 2021-05-28 14:20
  **/
 public class Recieve01 {
-    public static void main(String[] args) {
 
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("192.168.0.113");
-        factory.setPort(5672);
-        factory.setUsername("root");
-        factory.setPassword("root");
+    public static final String EXCHANGE_NAME = "fanout";
 
-        Connection connection = null;
-        Channel channel = null;
+    public static void main(String[] args) throws Exception {
+
+        Channel channel = MqUtils.getChannel();
+
         try {
-            connection = factory.newConnection();
-            channel = connection.createChannel();
             /**
              * 由于fanout类型的交换机的消息，类须与广播的模式，他不需要绑定RoutingKey
              * 而 又可能会有很多个消费者来接受这个交换机中的数据，因此我们创建队列是要创建一个随机的队列名称
@@ -33,8 +31,8 @@ public class Recieve01 {
              * 自动删除的    ： 当没有任何消费者监听这个队列， 他就会被删除
              */
             String queueName = channel.queueDeclare().getQueue();
-            channel.exchangeDeclare("fanoutExchange", "fanout", true);
-            channel.queueBind(queueName, "fanoutExchange", "");
+            channel.exchangeDeclare(EXCHANGE_NAME, "fanout", true);
+            channel.queueBind(queueName, EXCHANGE_NAME, "");
             channel.basicConsume(queueName, true, new DefaultConsumer(channel) {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
@@ -44,9 +42,8 @@ public class Recieve01 {
             });
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
         }
+
     }
 
 }
